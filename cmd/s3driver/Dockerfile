@@ -10,9 +10,9 @@ FROM alpine:3.16
 LABEL maintainers="Vitaliy Filippov <vitalif@yourcmc.ru>"
 LABEL description="csi-s3 slim image"
 
-RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing s3fs-fuse rclone
+RUN apk add --no-cache -X http://mirrors.aliyun.com/alpine/edge/testing s3fs-fuse rclone
 
-ADD https://github.com/yandex-cloud/geesefs/releases/latest/download/geesefs-linux-amd64 /usr/bin/geesefs
+ADD https://ghproxy.com/https://github.com/yandex-cloud/geesefs/releases/latest/download/geesefs-linux-amd64 /usr/bin/geesefs
 RUN chmod 755 /usr/bin/geesefs
 
 COPY --from=gobuild /build/s3driver /s3driver

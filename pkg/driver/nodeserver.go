@@ -21,10 +21,11 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 
+	"github.com/golang/glog"
 	"github.com/yandex-cloud/k8s-csi-s3/pkg/mounter"
 	"github.com/yandex-cloud/k8s-csi-s3/pkg/s3"
-	"github.com/golang/glog"
 	"golang.org/x/net/context"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -66,7 +67,7 @@ func getMeta(bucketName, prefix string, context map[string]string) *s3.FSMeta {
 
 func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	volumeID := req.GetVolumeId()
-	targetPath := req.GetTargetPath()
+	targetPath := strings.Replace(req.GetTargetPath(), "/mnt/paas/kubernetes/kubelet", "/var/lib/kubelet", -1)
 	stagingTargetPath := req.GetStagingTargetPath()
 	bucketName, prefix := volumeIDToBucketPrefix(volumeID)
 
@@ -121,7 +122,7 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 
 func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
 	volumeID := req.GetVolumeId()
-	targetPath := req.GetTargetPath()
+	targetPath := strings.Replace(req.GetTargetPath(), "/mnt/paas/kubernetes/kubelet", "/var/lib/kubelet", -1)
 
 	// Check arguments
 	if len(volumeID) == 0 {
